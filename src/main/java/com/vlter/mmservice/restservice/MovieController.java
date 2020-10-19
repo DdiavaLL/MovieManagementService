@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class MovieController {
     @Autowired
     private MovieRepository movieRepository;
+    @Autowired
+    private DirectorRepository directorRepository;
 
     // Получить все записи
     @GetMapping("/api/movies")
     public List getAllNotes() {
-        List<Movie> movies = movieRepository.findAll();
         return movieRepository.findAll();
     }
 
