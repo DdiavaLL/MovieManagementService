@@ -1,7 +1,6 @@
 package com.vlter.mmservice.restservice;
 
 import javax.persistence.*;
-import java.util.Set;
 
 /**
  * Created by Tereshchenko on 19.10.2020.
@@ -11,6 +10,8 @@ import java.util.Set;
 @Table(name = "directors")
 public class Director {
     @Id
+    @SequenceGenerator(name = "directorsSeq", sequenceName = "directors_sequence", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "directorsSeq")
     private Integer id;
 
     private String director;
@@ -21,6 +22,11 @@ public class Director {
 
     public Director(Integer id, String director) {
         this.id = id;
+        this.director = director;
+    }
+
+    public Director(String director) {
+
         this.director = director;
     }
 

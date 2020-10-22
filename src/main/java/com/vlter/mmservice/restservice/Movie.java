@@ -1,6 +1,7 @@
 package com.vlter.mmservice.restservice;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalTime;
 
 /**
@@ -9,17 +10,20 @@ import java.time.LocalTime;
 
 @Entity
 @Table(name = "movies")
-public class Movie {
+public class Movie implements Serializable{
 
     @Id
+    @SequenceGenerator(name = "moviesSeq", sequenceName = "movies_sequence", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moviesSeq")
     private Integer id;
+
+    private String title;
+    private Integer year;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "director_id", nullable = false)
     private Director director;
 
-    private String title;
-    private Integer year;
     private LocalTime length;
     private Integer rating;
 
