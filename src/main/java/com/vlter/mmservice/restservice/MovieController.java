@@ -6,11 +6,7 @@ package com.vlter.mmservice.restservice;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,8 +16,6 @@ public class MovieController {
     private MovieRepository movieRepository;
     @Autowired
     private DirectorRepository directorRepository;
-
-    ObjectMapper objectMapper = new ObjectMapper();
 
     // Список всех кинофильмов
     @GetMapping()
@@ -37,27 +31,18 @@ public class MovieController {
 
     // Добавление записи о кинофильме
     @RequestMapping(method = RequestMethod.POST)
-    public Serializable postMovie(@ModelAttribute MovieWrapper movieWrapper, Model model) {
-        objectMapper.findAndRegisterModules();
-        Movie newMovie = null;
-        try {
-            newMovie = objectMapper.readValue(movieWrapper.getJson(), Movie.class);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            StatusMessage dessMessage = GenerateStatus("Ошибка во время десериализации входящего JSON сообщения; ", e);
-            return dessMessage;
-        }
-        Director curDir = newMovie.getDirector();
+    public Serializable postMovie(@RequestBody Movie movie) {
+        Director curDir = movie.getDirector();
         if (curDir != null) {
             if (curDir.getId() != null) {
                 Director help = directorRepository.findById(curDir.getId()).orElse(null);
-                StatusMessage rezAdding = CorrectAdding(curDir, newMovie, help);
+                StatusMessage rezAdding = CorrectAdding(curDir, movie, help);
                 if (rezAdding != null)
                     return rezAdding;
             }
             else {
                 Director help1 = directorRepository.findByDirector(curDir.getDirector());
-                StatusMessage rezAdding = CorrectAdding(curDir, newMovie, help1);
+                StatusMessage rezAdding = CorrectAdding(curDir, movie, help1);
                 if (rezAdding != null)
                     return rezAdding;
             }
@@ -66,8 +51,71 @@ public class MovieController {
             StatusMessage directorMessage = new StatusMessage(500, "Во входящем запросе отсутствует режиссер кинофильма;");
             return directorMessage;
         }
-        Movie rezMovie = movieRepository.findById(newMovie.getId()).orElse(null);
+        Movie rezMovie = movieRepository.findById(movie.getId()).orElse(null);
         return rezMovie;
+    }
+
+    // Изменение информации о кинофильме с указанным id
+    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
+    public Serializable updateMovie(@PathVariable(value = "id") Integer movieId, @RequestBody Movie movieDetails) {
+        Movie findRez = movieRepository.findById(movieId).orElse(null);
+        if (findRez == null) {
+            StatusMessage serchRez = new StatusMessage(404, "Фильма, с указанным id, не существует!");
+            return serchRez;
+        }
+        else {
+            Director curDir = movieDetails.getDirector();
+            if (curDir != null) {
+                if (curDir.getId() != null) {
+                    Director help = directorRepository.findById(curDir.getId()).orElse(null);
+                    findRez.setTitle(movieDetails.getTitle());
+                    findRez.setYear(movieDetails.getYear());
+                    findRez.setDirector(movieDetails.getDirector());
+                    findRez.setLength(movieDetails.getLength());
+                    findRez.setRating(movieDetails.getRating());
+                    StatusMessage rezAdding = CorrectAdding(curDir, findRez, help);
+                    if (rezAdding != null)
+                        return rezAdding;
+                }
+                else {
+                    Director help1 = directorRepository.findByDirector(curDir.getDirector());
+                    findRez.setTitle(movieDetails.getTitle());
+                    findRez.setYear(movieDetails.getYear());
+                    findRez.setDirector(movieDetails.getDirector());
+                    findRez.setLength(movieDetails.getLength());
+                    findRez.setRating(movieDetails.getRating());
+                    StatusMessage rezAdding = CorrectAdding(curDir, findRez, help1);
+                    if (rezAdding != null)
+                        return rezAdding;
+                }
+            }
+            else {
+                StatusMessage directorMessage = new StatusMessage(500, "Во входящем запросе отсутствует режиссер кинофильма;");
+                return directorMessage;
+            }
+        }
+        return findRez;
+    }
+
+    // Удаление записи с указанным id
+    @DeleteMapping("/{id}")
+    public Serializable deleteMovie(@PathVariable (value = "id") Integer movieId) {
+        Movie findRez = movieRepository.findById(movieId).orElse(null);
+        if (findRez == null) {
+            StatusMessage serchRez = new StatusMessage(404, "Фильма, с указанным id, не существует!");
+            return serchRez;
+        }
+        else {
+            try {
+                movieRepository.delete(findRez);
+            } catch (Exception e) {
+                e.printStackTrace();
+                StatusMessage addingMessage = GenerateStatus("Ошибка во время удаления кинофильма; ", e);
+                return addingMessage;
+            }
+        }
+        StatusMessage succMessage = new StatusMessage(202, "Запись о кинофильме была удалена!");
+        return succMessage;
     }
 
     private StatusMessage CorrectAdding(Director curDir, Movie newMovie, Director help) {
