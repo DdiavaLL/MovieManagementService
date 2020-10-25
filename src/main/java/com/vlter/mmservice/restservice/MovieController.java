@@ -51,6 +51,10 @@ public class MovieController {
             StatusMessage directorMessage = new StatusMessage(500, "Во входящем запросе отсутствует режиссер кинофильма;");
             return directorMessage;
         }
+        Director help = directorRepository.findByDirector(movie.getDirector().getDirector() );
+        StatusMessage ca = CorrectAdding(movie.getDirector(), movie, help);
+        if (ca != null)
+            return ca;
         Movie rezMovie = movieRepository.findById(movie.getId()).orElse(null);
         return rezMovie;
     }

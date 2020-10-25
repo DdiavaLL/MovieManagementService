@@ -6,6 +6,13 @@ package com.vlter.mmservice.restservice;
 public class MovieWrapper {
     private String json;
 
+    public MovieWrapper() {
+    }
+
+    public MovieWrapper(String json) {
+        this.json = json;
+    }
+
     public String getJson() {
         return json;
     }

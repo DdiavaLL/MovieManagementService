@@ -10,6 +10,9 @@ public class StatusMessage implements Serializable{
     private Integer status;
     private String reason;
 
+    public StatusMessage() {
+    }
+
     public StatusMessage(Integer status, String reason) {
         this.status = status;
         this.reason = reason;
