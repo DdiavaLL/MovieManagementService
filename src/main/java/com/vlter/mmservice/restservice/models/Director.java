@@ -26,7 +26,6 @@ public class Director {
     }
 
     public Director(String director) {
-
         this.director = director;
     }
 

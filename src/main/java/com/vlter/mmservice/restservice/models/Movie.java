@@ -1,10 +1,6 @@
 package com.vlter.mmservice.restservice.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.vlter.mmservice.restservice.models.Director;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalTime;

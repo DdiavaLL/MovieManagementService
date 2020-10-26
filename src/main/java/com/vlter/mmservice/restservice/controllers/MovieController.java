@@ -23,8 +23,8 @@ public class MovieController {
 
     // Список всех кинофильмов
     @GetMapping()
-    public ListMovies getAllNotes() {
-        ListMovies listMovies = new ListMovies(200, movieRepository.findAll());
+    public ListMovieResponse getAllNotes() {
+        ListMovieResponse listMovies = new ListMovieResponse(200, movieRepository.findAll());
         return listMovies;
     }
 
@@ -36,7 +36,7 @@ public class MovieController {
             StatusMessage rezSearch = new StatusMessage(404, "Фильма, с указанным id, не существует!");
             return rezSearch;
         }
-        OneMovie oneMovie = new OneMovie(200, movieRepository.findById(movieId).orElse(null));
+        MovieResponse oneMovie = new MovieResponse(200, movieRepository.findById(movieId).orElse(null));
         return oneMovie;
     }
 
@@ -65,7 +65,7 @@ public class MovieController {
         } else {
             return rezValidation;
         }
-        OneMovie rezMovie = new OneMovie(200, movieRepository.findById(movie.getId()).orElse(null));
+        MovieResponse rezMovie = new MovieResponse(200, movieRepository.findById(movie.getId()).orElse(null));
         return rezMovie;
     }
 
@@ -107,7 +107,7 @@ public class MovieController {
         } else {
             return rezValidation;
         }
-        OneMovie rezMovie = new OneMovie(200, findRez);
+        MovieResponse rezMovie = new MovieResponse(200, findRez);
         return rezMovie;
     }
 
