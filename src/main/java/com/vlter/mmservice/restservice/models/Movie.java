@@ -1,6 +1,7 @@
-package com.vlter.mmservice.restservice;
+package com.vlter.mmservice.restservice.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.vlter.mmservice.restservice.models.Director;
 
 import javax.persistence.*;
 import java.io.Serializable;

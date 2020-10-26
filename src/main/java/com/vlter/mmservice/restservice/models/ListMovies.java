@@ -1,4 +1,6 @@
-package com.vlter.mmservice.restservice;
+package com.vlter.mmservice.restservice.models;
+
+import com.vlter.mmservice.restservice.models.Movie;
 
 import java.io.Serializable;
 import java.util.List;

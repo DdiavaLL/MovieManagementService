@@ -1,4 +1,4 @@
-package com.vlter.mmservice.restservice;
+package com.vlter.mmservice.restservice.models;
 
 import javax.persistence.*;
 

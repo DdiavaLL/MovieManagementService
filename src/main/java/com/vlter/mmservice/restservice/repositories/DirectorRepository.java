@@ -1,5 +1,6 @@
-package com.vlter.mmservice.restservice;
+package com.vlter.mmservice.restservice.repositories;
 
+import com.vlter.mmservice.restservice.models.Director;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,4 +1,4 @@
-package com.vlter.mmservice.restservice;
+package com.vlter.mmservice.restservice.controllers;
 
 /**
  * Created by Tereshchenko on 18.10.2020.
@@ -6,6 +6,10 @@ package com.vlter.mmservice.restservice;
 
 import java.io.Serializable;
 import java.util.List;
+
+import com.vlter.mmservice.restservice.models.*;
+import com.vlter.mmservice.restservice.repositories.DirectorRepository;
+import com.vlter.mmservice.restservice.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.vlter.mmservice.restservice;
+package com.vlter.mmservice.restservice.models;
 
 /**
  * Created by Tereshchenko on 20.10.2020.
