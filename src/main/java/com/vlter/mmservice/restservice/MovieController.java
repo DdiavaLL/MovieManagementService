@@ -25,15 +25,21 @@ public class MovieController {
 
     // Получить информацию о фильме по id
     @GetMapping("/{id}")
-    public Movie getMovieById(@PathVariable (value = "id") Integer movieId) {
+    public Serializable getMovieById(@PathVariable (value = "id") Integer movieId) {
+        Movie rezMovie = movieRepository.findById(movieId).orElse(null);
+        if (rezMovie == null) {
+            StatusMessage rezSearch = new StatusMessage(404, "Фильма, с указанным id, не существует!");
+            return rezSearch;
+        }
         return movieRepository.findById(movieId).orElse(null);
     }
 
     // Добавление записи о кинофильме
     @RequestMapping(method = RequestMethod.POST)
     public Serializable postMovie(@RequestBody Movie movie) {
-        Director curDir = movie.getDirector();
-        if (curDir != null) {
+        StatusMessage rezValidation = Validation(movie);
+        if (rezValidation == null) {
+            Director curDir = movie.getDirector();
             if (curDir.getId() != null) {
                 Director help = directorRepository.findById(curDir.getId()).orElse(null);
                 StatusMessage rezAdding = CorrectAdding(curDir, movie, help);
@@ -46,15 +52,13 @@ public class MovieController {
                 if (rezAdding != null)
                     return rezAdding;
             }
+            Director help = directorRepository.findByDirector(movie.getDirector().getDirector() );
+            StatusMessage ca = CorrectAdding(movie.getDirector(), movie, help);
+            if (ca != null)
+                return ca;
+        } else {
+            return rezValidation;
         }
-        else {
-            StatusMessage directorMessage = new StatusMessage(500, "Во входящем запросе отсутствует режиссер кинофильма;");
-            return directorMessage;
-        }
-        Director help = directorRepository.findByDirector(movie.getDirector().getDirector() );
-        StatusMessage ca = CorrectAdding(movie.getDirector(), movie, help);
-        if (ca != null)
-            return ca;
         Movie rezMovie = movieRepository.findById(movie.getId()).orElse(null);
         return rezMovie;
     }
@@ -62,14 +66,15 @@ public class MovieController {
     // Изменение информации о кинофильме с указанным id
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public Serializable updateMovie(@PathVariable(value = "id") Integer movieId, @RequestBody Movie movieDetails) {
+        StatusMessage rezValidation = Validation(movieDetails);
         Movie findRez = movieRepository.findById(movieId).orElse(null);
-        if (findRez == null) {
-            StatusMessage serchRez = new StatusMessage(404, "Фильма, с указанным id, не существует!");
-            return serchRez;
-        }
-        else {
-            Director curDir = movieDetails.getDirector();
-            if (curDir != null) {
+        if (rezValidation == null) {
+            if (findRez == null) {
+                StatusMessage serchRez = new StatusMessage(404, "Фильма, с указанным id, не существует!");
+                return serchRez;
+            }
+            else {
+                Director curDir = movieDetails.getDirector();
                 if (curDir.getId() != null) {
                     Director help = directorRepository.findById(curDir.getId()).orElse(null);
                     findRez.setTitle(movieDetails.getTitle());
@@ -93,10 +98,8 @@ public class MovieController {
                         return rezAdding;
                 }
             }
-            else {
-                StatusMessage directorMessage = new StatusMessage(500, "Во входящем запросе отсутствует режиссер кинофильма;");
-                return directorMessage;
-            }
+        } else {
+            return rezValidation;
         }
         return findRez;
     }
@@ -111,6 +114,10 @@ public class MovieController {
         }
         else {
             try {
+                List<Movie> directorClones = movieRepository.findMoviesContainsDir(findRez.getDirector());
+                if (directorClones.size() > 1) {
+                    findRez.setDirector(null);
+                }
                 movieRepository.delete(findRez);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -144,6 +151,44 @@ public class MovieController {
                 StatusMessage addingMessage = GenerateStatus("Ошибка во время добавления нового кинофильма; ", e);
                 return addingMessage;
             }
+        }
+        return null;
+    }
+
+    private StatusMessage Validation(Movie newMovie) {
+        Integer checkYear = newMovie.getYear();
+        Integer checkRating = newMovie.getRating();
+        if (checkYear == null) {
+            StatusMessage yearMessage = new StatusMessage(400, "Во входящем запросе отсутствует год выпуска кинофильма");
+            return yearMessage;
+        } else if (checkYear < 1900) {
+            StatusMessage yearMessage = new StatusMessage(400, "Во входящем запросе год выпуска кинофильма должен быть не меньше 1900!");
+            return yearMessage;
+        } else if (checkYear > 2100) {
+            StatusMessage yearMessage = new StatusMessage(400, "Во входящем запросе год выпуска кинофильма должен быть не больше 2100!");
+            return yearMessage;
+        }
+        if (checkRating == null) {
+            StatusMessage ratingMessage = new StatusMessage(400, "Во входящем запросе отсутствует рейтинг кинофильма");
+            return ratingMessage;
+        } else if (checkRating < 0) {
+            StatusMessage ratingMessage = new StatusMessage(400, "Во входящем запросе рейтинг кинофильма должен быть не меньше 0!");
+            return ratingMessage;
+        } else if (checkRating > 10) {
+            StatusMessage ratingMessage = new StatusMessage(400, "Во входящем запросе рейтинг кинофильма должен быть не больше 10!");
+            return ratingMessage;
+        }
+        if (newMovie.getTitle() == null) {
+            StatusMessage titleMessage = new StatusMessage(400, "Во входящем запросе отсутствует название кинофильма!");
+            return titleMessage;
+        }
+        if (newMovie.getDirector() == null) {
+            StatusMessage directorMessage = new StatusMessage(400, "Во входящем запросе отсутствует режиссер кинофильма!");
+            return directorMessage;
+        }
+        if (newMovie.getLength() == null) {
+            StatusMessage lengthMessage = new StatusMessage(400, "Во входящем запросе отсутствует продолжительность кинофильма!");
+            return lengthMessage;
         }
         return null;
     }
