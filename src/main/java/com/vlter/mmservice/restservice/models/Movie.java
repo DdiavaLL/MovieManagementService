@@ -1,5 +1,7 @@
 package com.vlter.mmservice.restservice;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalTime;
@@ -49,6 +51,7 @@ public class Movie implements Serializable{
     public Integer getYear() {return year;}
     public void setYear(Integer year) {this.year = year;}
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     public LocalTime getLength() {return length;}
     public void setLength(LocalTime length) {this.length = length;}
 

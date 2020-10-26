@@ -19,8 +19,9 @@ public class MovieController {
 
     // Список всех кинофильмов
     @GetMapping()
-    public List getAllNotes() {
-        return movieRepository.findAll();
+    public ListMovies getAllNotes() {
+        ListMovies listMovies = new ListMovies(200, movieRepository.findAll());
+        return listMovies;
     }
 
     // Получить информацию о фильме по id
@@ -31,7 +32,8 @@ public class MovieController {
             StatusMessage rezSearch = new StatusMessage(404, "Фильма, с указанным id, не существует!");
             return rezSearch;
         }
-        return movieRepository.findById(movieId).orElse(null);
+        OneMovie oneMovie = new OneMovie(200, movieRepository.findById(movieId).orElse(null));
+        return oneMovie;
     }
 
     // Добавление записи о кинофильме
@@ -59,7 +61,7 @@ public class MovieController {
         } else {
             return rezValidation;
         }
-        Movie rezMovie = movieRepository.findById(movie.getId()).orElse(null);
+        OneMovie rezMovie = new OneMovie(200, movieRepository.findById(movie.getId()).orElse(null));
         return rezMovie;
     }
 
@@ -101,7 +103,8 @@ public class MovieController {
         } else {
             return rezValidation;
         }
-        return findRez;
+        OneMovie rezMovie = new OneMovie(200, findRez);
+        return rezMovie;
     }
 
     // Удаление записи с указанным id
