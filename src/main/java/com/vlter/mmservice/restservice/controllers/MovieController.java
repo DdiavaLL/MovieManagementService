@@ -149,9 +149,8 @@ public class MovieController {
         }
         else {
             try {
-                Director newDir = new Director(curDir.getDirector());
-                directorRepository.save(newDir);
-                newMovie.setDirector(newDir);
+                directorRepository.save(curDir);
+                newMovie.setDirector(curDir);
                 movieRepository.save(newMovie);
             } catch (Exception e) {
                 e.printStackTrace();
