@@ -1,6 +1,7 @@
 package com.vlter.mmservice.restservice.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 /**
  * Created by Tereshchenko on 19.10.2020.
@@ -14,6 +15,7 @@ public class Director {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "directorsSeq")
     private Integer id;
 
+    @Size(max = 100, message = "ФИО режиссера кинофильма должно быть не длинее 100 символов!")
     private String director;
 
     public Director() {

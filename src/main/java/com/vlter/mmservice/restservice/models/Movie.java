@@ -1,7 +1,11 @@
 package com.vlter.mmservice.restservice.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Max;
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalTime;
 
@@ -18,14 +22,26 @@ public class Movie implements Serializable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moviesSeq")
     private Integer id;
 
+    @NotNull(message = "Во входящем запросе отсутствует название кинофильма!")
+    @Size(max = 100, message = "Название кинофильма должно быть не длинее 100 символов!")
     private String title;
+
+    @NotNull(message = "Во входящем запросе отсутствует год выпуска кинофильма!")
+    @Min(value = 1900, message = "Во входящем запросе год выпуска кинофильма должен быть не меньше 1900!")
+    @Max(value = 2100, message = "Во входящем запросе год выпуска кинофильма должен быть не больше 2100!")
     private Integer year;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "director_id", nullable = false)
+    @NotNull(message = "Во входящем запросе отсутствует режиссер кинофильма!")
     private Director director;
 
+    @NotNull(message = "Во входящем запросе отсутствует длительность кинофильма!")
     private LocalTime length;
+
+    @NotNull(message = "Во входящем запросе отсутствует рейтинг кинофильма!")
+    @Min(value = 0, message = "Во входящем запросе рейтинг кинофильма должен быть не меньше 0!")
+    @Max(value = 10, message = "Во входящем запросе рейтинг кинофильма должен быть не больше 10!")
     private Integer rating;
 
     public Movie() {
