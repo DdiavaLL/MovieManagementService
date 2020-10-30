@@ -6,12 +6,16 @@ package com.vlter.mmservice.restservice.controllers;
 
 import java.io.Serializable;
 import java.util.List;
-
+import java.util.Set;
 import com.vlter.mmservice.restservice.models.*;
 import com.vlter.mmservice.restservice.repositories.DirectorRepository;
 import com.vlter.mmservice.restservice.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 
 @RestController
 @RequestMapping(value = "/api/movies")
@@ -20,6 +24,9 @@ public class MovieController {
     private MovieRepository movieRepository;
     @Autowired
     private DirectorRepository directorRepository;
+
+    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    Validator validator = validatorFactory.getValidator();
 
     // Список всех кинофильмов
     @GetMapping()
@@ -43,6 +50,14 @@ public class MovieController {
     // Добавление записи о кинофильме
     @RequestMapping(method = RequestMethod.POST)
     public Serializable postMovie(@RequestBody Movie movie) {
+        Set<ConstraintViolation<Movie>> violations = validator.validate(movie);
+        if (violations != null) {
+            for (ConstraintViolation<Movie> violation : violations) {
+                if (violation != null) {
+                    return new StatusMessage(400, violation.getMessage());
+                }
+            }
+        }
         Director curDir = movie.getDirector();
         if (curDir.getId() != null) {
             Director help = directorRepository.findById(curDir.getId()).orElse(null);
@@ -67,6 +82,14 @@ public class MovieController {
     // Изменение информации о кинофильме с указанным id
     @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
     public Serializable updateMovie(@PathVariable(value = "id") Integer movieId, @RequestBody Movie movieDetails) {
+        Set<ConstraintViolation<Movie>> violations = validator.validate(movieDetails);
+        if (violations != null) {
+            for (ConstraintViolation<Movie> violation : violations) {
+                if (violation != null) {
+                    return new StatusMessage(400, violation.getMessage());
+                }
+            }
+        }
         Movie findRez = movieRepository.findById(movieId).orElse(null);
         if (findRez == null) {
             StatusMessage serchRez = new StatusMessage(404, "Фильма, с указанным id, не существует!");

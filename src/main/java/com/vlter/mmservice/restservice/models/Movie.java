@@ -1,11 +1,8 @@
 package com.vlter.mmservice.restservice.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Max;
+import javax.validation.constraints.*;
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalTime;
 
@@ -22,7 +19,7 @@ public class Movie implements Serializable{
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "moviesSeq")
     private Integer id;
 
-    @NotNull(message = "Во входящем запросе отсутствует название кинофильма!")
+    @NotBlank(message = "Во входящем запросе отсутствует название кинофильма!")
     @Size(max = 100, message = "Название кинофильма должно быть не длинее 100 символов!")
     private String title;
 

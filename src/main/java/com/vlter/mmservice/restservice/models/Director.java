@@ -1,6 +1,7 @@
 package com.vlter.mmservice.restservice.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
@@ -16,6 +17,7 @@ public class Director {
     private Integer id;
 
     @Size(max = 100, message = "ФИО режиссера кинофильма должно быть не длинее 100 символов!")
+    @NotBlank(message = "Во входящем запросе отсутствует режиссер кинофильма!")
     private String director;
 
     public Director() {
