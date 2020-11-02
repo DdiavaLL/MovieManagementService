@@ -12,6 +12,7 @@ import com.vlter.mmservice.restservice.repositories.DirectorRepository;
 import com.vlter.mmservice.restservice.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -36,7 +37,7 @@ public class MovieController {
     }
 
     // Получить информацию о фильме по id
-    @GetMapping("/{id}")
+    /*@GetMapping("/{id}")
     public Serializable getMovieById(@PathVariable (value = "id") Integer movieId) {
         Movie rezMovie = movieRepository.findById(movieId).orElse(null);
         if (rezMovie == null) {
@@ -45,7 +46,19 @@ public class MovieController {
         }
         MovieResponse oneMovie = new MovieResponse(200, movieRepository.findById(movieId).orElse(null));
         return oneMovie;
+    }*/
+
+    //*******************************
+    @GetMapping("/{id}")
+    public Movie getMovieById(@PathVariable (value = "id") Integer movieId) {
+        Movie rezMovie = movieRepository.findById(movieId).orElse(null);
+        if (rezMovie == null) {
+            throw new ThereIsNoSuchMovieException();
+        }
+        return rezMovie;
     }
+    //*******************************
+
 
     // Добавление записи о кинофильме
     @RequestMapping(method = RequestMethod.POST)
