@@ -14,25 +14,35 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler{
     @ExceptionHandler(ThereIsNoSuchMovieException.class)
     protected ResponseEntity<ControllerException> handleThereIsNoSuchMovieException() {
-        return new ResponseEntity<ControllerException>(new ControllerException("There is no such movie"), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ControllerException>(new ControllerException(HttpStatus.NOT_FOUND.value(), "There is no such movie"), HttpStatus.NOT_FOUND);
     }
 
     private static class ControllerException {
-        private String message;
+        private Integer status;
+        private String reason;
 
         public ControllerException() {
         }
 
-        public ControllerException(String message) {
-            this.message = message;
+        public ControllerException(Integer status, String reason) {
+            this.status = status;
+            this.reason = reason;
         }
 
-        public String getMessage() {
-            return message;
+        public Integer getStatus() {
+            return status;
         }
 
-        public void setMessage(String message) {
-            this.message = message;
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public String getReason() {
+            return reason;
+        }
+
+        public void setReason(String reason) {
+            this.reason = reason;
         }
     }
 }
