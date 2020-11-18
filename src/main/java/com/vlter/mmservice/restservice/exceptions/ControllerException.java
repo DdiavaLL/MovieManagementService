@@ -1,19 +1,18 @@
-package com.vlter.mmservice.restservice.models;
+package com.vlter.mmservice.restservice.exceptions;
 
 import java.io.Serializable;
 
 /**
- * Created by Tereshchenko on 21.10.2020.
+ * Created by Tereshchenko on 04.11.2020.
  */
-
-public class StatusMessage implements Serializable{
+public class ControllerException implements Serializable{
     private Integer status;
     private String reason;
 
-    public StatusMessage() {
+    public ControllerException() {
     }
 
-    public StatusMessage(Integer status, String reason) {
+    public ControllerException(Integer status, String reason) {
         this.status = status;
         this.reason = reason;
     }
