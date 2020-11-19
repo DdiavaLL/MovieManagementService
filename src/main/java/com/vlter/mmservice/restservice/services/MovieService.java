@@ -1,11 +1,10 @@
 package com.vlter.mmservice.restservice.services;
 
-import com.vlter.mmservice.restservice.exceptions.IncorrectSaveException;
+import com.vlter.mmservice.restservice.exceptions.IncorrectMovieSaveException;
 import com.vlter.mmservice.restservice.exceptions.ThereIsNoSuchMovieException;
 import com.vlter.mmservice.restservice.exceptions.ValidationException;
 import com.vlter.mmservice.restservice.models.Director;
 import com.vlter.mmservice.restservice.models.Movie;
-import com.vlter.mmservice.restservice.repositories.DirectorRepository;
 import com.vlter.mmservice.restservice.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,23 +22,15 @@ import java.util.Set;
 public class MovieService {
     @Autowired
     public MovieRepository movieRepository;
+
     @Autowired
-    public DirectorRepository directorRepository;
+    DirectorService directorService;
 
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     Validator validator = validatorFactory.getValidator();
 
     public void validateMovie(Movie movie) {
-        String movieMessage = "";
-        Set<ConstraintViolation<Director>> violationsDirector = validator.validate(movie.getDirector());
-        if (violationsDirector != null) {
-            for (ConstraintViolation<Director> violation : violationsDirector) {
-                if (violation != null) {
-                    movieMessage += violation.getMessage() + " ";
-                }
-            }
-        }
-
+        String movieMessage = directorService.validateDirector(movie.getDirector());
         Set<ConstraintViolation<Movie>> violationsMovie = validator.validate(movie);
         if (violationsMovie != null) {
             for (ConstraintViolation<Movie> violation : violationsMovie) {
@@ -54,16 +45,7 @@ public class MovieService {
     }
 
     public Movie addMovie(Movie movie) {
-        Director help = null;
-        if (movie.getDirector().getId() != null) {
-            help = directorRepository.findById(movie.getDirector().getId()).orElse(null);
-        }
-        else {
-            help = directorRepository.findByDirector(movie.getDirector().getDirector());
-        }
-        if (help == null) {
-            help = directorRepository.save(movie.getDirector());
-        }
+        Director help = directorService.addDirector(movie.getDirector());
         return saveMovie(movie, help);
     }
 
@@ -75,15 +57,7 @@ public class MovieService {
         else {
             Director curDir = movieDetails.getDirector();
             Director help = null;
-            if (curDir.getId() != null) {
-                help = directorRepository.findById(curDir.getId()).orElse(null);
-            }
-            else {
-                help = directorRepository.findByDirector(curDir.getDirector());;
-            }
-            if (help == null) {
-                help = directorRepository.save(curDir);
-            }
+            help = directorService.addDirector(curDir);
             curMovie.setTitle(movieDetails.getTitle());
             curMovie.setYear(movieDetails.getYear());
             curMovie.setDirector(movieDetails.getDirector());
@@ -100,7 +74,7 @@ public class MovieService {
             rezultMovie = movieRepository.save(newMovie);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new IncorrectSaveException();
+            throw new IncorrectMovieSaveException();
         }
         return rezultMovie;
     }

@@ -1,10 +1,6 @@
 package com.vlter.mmservice.restservice.controllers;
 
-import com.vlter.mmservice.restservice.exceptions.ControllerException;
-import com.vlter.mmservice.restservice.exceptions.DeleteException;
-import com.vlter.mmservice.restservice.exceptions.IncorrectSaveException;
-import com.vlter.mmservice.restservice.exceptions.ThereIsNoSuchMovieException;
-import com.vlter.mmservice.restservice.exceptions.ValidationException;
+import com.vlter.mmservice.restservice.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,13 +23,28 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler{
         return new ResponseEntity<ControllerException>(new ControllerException(HttpStatus.NOT_FOUND.value(), "Данного фильма не существует!"), HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(IncorrectSaveException.class)
-    protected ResponseEntity<ControllerException> handleIncorrectAddingException() {
+    @ExceptionHandler(IncorrectMovieSaveException.class)
+    protected ResponseEntity<ControllerException> handleIncorrectMovieAddingException() {
         return new ResponseEntity<ControllerException>(new ControllerException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ошибка во время добавления нового кинофильма!"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(DeleteException.class)
-    protected ResponseEntity<ControllerException> handleDeleteException() {
+    @ExceptionHandler(DeleteMovieException.class)
+    protected ResponseEntity<ControllerException> handleDeleteMovieException() {
         return new ResponseEntity<ControllerException>(new ControllerException(HttpStatus.BAD_REQUEST.value(), "Ошибка во время удаления кинофильма!"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DeleteDirectorException.class)
+    protected ResponseEntity<ControllerException> handleDeleteDirectorException() {
+        return new ResponseEntity<ControllerException>(new ControllerException(HttpStatus.BAD_REQUEST.value(), "Ошибка во время удаления режиссера!"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IncorrectDirectorSaveException.class)
+    protected ResponseEntity<ControllerException> handleIncorrectDirectorAddingException() {
+        return new ResponseEntity<ControllerException>(new ControllerException(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Ошибка во время добавления нового режиссера!"), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(ThereIsNoSuchDirectorException.class)
+    protected ResponseEntity<ControllerException> handleThereIsNoSuchDirectorException() {
+        return new ResponseEntity<ControllerException>(new ControllerException(HttpStatus.NOT_FOUND.value(), "Данного режиссера не существует!"), HttpStatus.NOT_FOUND);
     }
 }

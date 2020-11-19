@@ -25,7 +25,5 @@ public class MovieResponse implements Serializable{
 
     public Movie getMovie() { return movie; }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
-    }
+    public void setMovie(Movie movie) { this.movie = movie; }
 }

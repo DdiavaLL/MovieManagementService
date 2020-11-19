@@ -5,7 +5,7 @@ package com.vlter.mmservice.restservice.controllers;
  */
 
 import java.io.Serializable;
-import com.vlter.mmservice.restservice.exceptions.DeleteException;
+import com.vlter.mmservice.restservice.exceptions.DeleteMovieException;
 import com.vlter.mmservice.restservice.exceptions.ThereIsNoSuchMovieException;
 import com.vlter.mmservice.restservice.models.*;
 import com.vlter.mmservice.restservice.services.MovieService;
@@ -57,7 +57,7 @@ public class MovieController {
         return rezMovie;
     }
 
-    // Удаление записи с указанным id
+    // Удаление записи о фильме с указанным id
     @DeleteMapping("/{id}")
     public Serializable deleteMovie(@PathVariable (value = "id") Integer movieId) {
         Movie findRez = movieService.movieRepository.findById(movieId).orElse(null);
@@ -69,7 +69,7 @@ public class MovieController {
                 movieService.deleteMovie(movieId);
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new DeleteException();
+                throw new DeleteMovieException();
             }
         }
         MovieResponse rezMovie = new MovieResponse(HttpStatus.OK.value(), findRez);
