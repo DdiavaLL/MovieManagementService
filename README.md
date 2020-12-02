@@ -26,14 +26,23 @@ Java приложение разработано с использованием
 ## Структура приложения
 В приложении таблицы мапятся в классы Movie и Director. Для взаимодействия с БД реализованы JPA-репозитории: MovieRepository, DirectorRepository. 
 
-Для обработки веб-запросов создан контроллер MovieController, реализующий обработку следующих HTTP-запросов:
+Для обработки веб-запросов, связанных с кинофильмами, создан контроллер MovieController, реализующий обработку следующих HTTP-запросов:
 1.  GET /api/movies - список всех кинофильмов;
 2.  GET /api/movies/:id - информация о кинофильме с указанным id;
 3.  POST /api/movies - добавление новой записи о кинофильме;
 4.  PATCH /api/movies/:id - изменение информации о кинофильме с указанным id;
 5.  DELETE /api/movies/:id - удаление записи с указанным id;
 
-Классы ListMovieResponse и MovieRepsponce используются для передачи ответов на HTTP-запросы. Класс StatusMessage формирует сообщение с кодом ошибки и причиной ее возникновения.
+Классы ListMovieResponse и MovieRepsponce используются для передачи ответов на HTTP-запросы.
+
+Для обработки веб-запросов, связанных с режиссерами, создан контроллер DirectorController, реализующий обработку следующих HTTP-запросов:
+1.  GET /api/directors - список всех режиссеров;
+2.  GET /api/directors/:id - информация о режиссере с указанным id;
+3.  POST /api/directors - добавление нового режиссера;
+4.  PATCH /api/directors/:id - изменение информации о режиссере с указанным id;
+5.  DELETE /api/directors/:id - удаление записи с указанным id;
+
+Классы ListDirectorResponse и DirectorRepsponce используются для передачи ответов на HTTP-запросы.
 
 ## Запуск приложения
 Для запуска из IntelliJ IDEA необходимо создать конфигурацию для запуска типа Spring Boot, в поле Main class указать: com.vlter.mmservice.MmserviceApplication.
