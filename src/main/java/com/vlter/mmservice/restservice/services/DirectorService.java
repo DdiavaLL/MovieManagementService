@@ -25,16 +25,16 @@ public class DirectorService {
     Validator validator = validatorFactory.getValidator();
 
     public String validateDirector(Director director) {
-        String movieMessage = "";
+        String directorMessage = "";
         Set<ConstraintViolation<Director>> violationsDirector = validator.validate(director);
         if (violationsDirector != null) {
             for (ConstraintViolation<Director> violation : violationsDirector) {
                 if (violation != null) {
-                    movieMessage += violation.getMessage() + " ";
+                    directorMessage += violation.getMessage() + " ";
                 }
             }
         }
-        return movieMessage;
+        return directorMessage;
     }
 
     public Director addDirector(Director director) {

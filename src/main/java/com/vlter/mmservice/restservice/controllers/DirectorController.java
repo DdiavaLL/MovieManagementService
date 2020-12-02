@@ -4,6 +4,7 @@ import com.vlter.mmservice.restservice.exceptions.DeleteDirectorException;
 import com.vlter.mmservice.restservice.exceptions.ThereIsNoSuchDirectorException;
 import com.vlter.mmservice.restservice.models.Director;
 import com.vlter.mmservice.restservice.models.DirectorResponse;
+import com.vlter.mmservice.restservice.models.ListDirectorResponse;
 import com.vlter.mmservice.restservice.services.DirectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,23 @@ import java.io.Serializable;
 public class DirectorController {
     @Autowired
     DirectorService directorService;
+
+    // Список всех режиссеров
+    @GetMapping()
+    public ListDirectorResponse getAllNotes() {
+        ListDirectorResponse listDirectors = new ListDirectorResponse(HttpStatus.OK.value(), directorService.directorRepository.findAll());
+        return listDirectors;
+    }
+
+    // Получить информацию о режиссере по id
+    @GetMapping("/{id}")
+    public DirectorResponse getDirectorById(@PathVariable (value = "id") Integer directorId) {
+        Director rezDirector = directorService.directorRepository.findById(directorId).orElse(null);
+        if (rezDirector == null) {
+            throw new ThereIsNoSuchDirectorException();
+        }
+        return new DirectorResponse(HttpStatus.OK.value(), rezDirector);
+    }
 
     // Добавление режиссера
     @RequestMapping(method = RequestMethod.POST)
