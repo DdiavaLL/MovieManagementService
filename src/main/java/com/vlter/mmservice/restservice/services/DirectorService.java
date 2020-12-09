@@ -38,13 +38,7 @@ public class DirectorService {
     }
 
     public Director addDirector(Director director) {
-        Director help = null;
-        if (director.getId() != null) {
-            help = directorRepository.findById(director.getId()).orElse(null);
-        }
-        else {
-            help = directorRepository.findByDirector(director.getDirector());
-        }
+        Director help = directorRepository.findByDirectorEquals(director.getDirector());
         if (help == null) {
             help = saveDirector(director);
         }

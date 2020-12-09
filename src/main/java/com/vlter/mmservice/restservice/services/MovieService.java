@@ -81,7 +81,7 @@ public class MovieService {
 
     public void deleteMovie(Integer movieId) throws Exception{
         Movie findRez = movieRepository.findById(movieId).orElse(null);
-        List<Movie> directorClones = movieRepository.findMoviesContainsDir(findRez.getDirector());
+        List<Movie> directorClones = movieRepository.findByDirectorIs(findRez.getDirector());
         if (directorClones.size() > 1) {
             findRez.setDirector(null);
         }

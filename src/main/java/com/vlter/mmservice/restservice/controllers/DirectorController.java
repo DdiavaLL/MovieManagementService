@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by Tereshchenko on 19.11.2020.
@@ -23,58 +24,52 @@ public class DirectorController {
 
     // Список всех режиссеров
     @GetMapping()
-    public ListDirectorResponse getAllNotes() {
-        ListDirectorResponse listDirectors = new ListDirectorResponse(HttpStatus.OK.value(), directorService.directorRepository.findAll());
-        return listDirectors;
+    public List getAllDirectors() {
+        return directorService.directorRepository.findAll();
     }
 
     // Получить информацию о режиссере по id
     @GetMapping("/{id}")
-    public DirectorResponse getDirectorById(@PathVariable (value = "id") Integer directorId) {
-        Director rezDirector = directorService.directorRepository.findById(directorId).orElse(null);
+    public Director getDirectorById(@PathVariable Integer id) {
+        Director rezDirector = directorService.directorRepository.findById(id).orElse(null);
         if (rezDirector == null) {
             throw new ThereIsNoSuchDirectorException();
         }
-        return new DirectorResponse(HttpStatus.OK.value(), rezDirector);
+        return rezDirector;
     }
 
     // Добавление режиссера
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public Serializable postDirector(@RequestBody Director director) {
         directorService.validateDirector(director);
         Director rezultDirector = directorService.addDirector(director);
-
-        DirectorResponse rezDirector = new DirectorResponse(HttpStatus.OK.value(), rezultDirector);
-        return rezDirector;
+        return rezultDirector;
     }
 
     // Изменение информации о режиссере с указанным id
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public Serializable updateDirector(@PathVariable(value = "id") Integer directorId, @RequestBody Director directorDetails) {
+    @PatchMapping("/{id}")
+    public Serializable updateDirector(@PathVariable Integer id, @RequestBody Director directorDetails) {
         directorService.validateDirector(directorDetails);
-        Director findRez = directorService.directorRepository.findById(directorId).orElse(null);
-        directorService.updateDirector(directorId, directorDetails);
-
-        DirectorResponse rezDirector = new DirectorResponse(HttpStatus.OK.value(), findRez);
-        return rezDirector;
+        Director findRez = directorService.directorRepository.findById(id).orElse(null);
+        directorService.updateDirector(id, directorDetails);
+        return findRez;
     }
 
     // Удаление записи о режиссере с указанным id
     @DeleteMapping("/{id}")
-    public Serializable deleteDirector(@PathVariable (value = "id") Integer directorId) {
-        Director findRez = directorService.directorRepository.findById(directorId).orElse(null);
+    public Serializable deleteDirector(@PathVariable Integer id) {
+        Director findRez = directorService.directorRepository.findById(id).orElse(null);
         if (findRez == null) {
             throw new ThereIsNoSuchDirectorException();
         }
         else {
             try {
-                directorService.deleteDirector(directorId);
+                directorService.deleteDirector(id);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new DeleteDirectorException();
             }
         }
-        DirectorResponse rezDirector = new DirectorResponse(HttpStatus.OK.value(), findRez);
-        return rezDirector;
+        return findRez;
     }
 }

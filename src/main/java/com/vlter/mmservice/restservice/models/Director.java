@@ -3,6 +3,7 @@ package com.vlter.mmservice.restservice.models;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * Created by Tereshchenko on 19.10.2020.
@@ -10,7 +11,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "directors")
-public class Director {
+public class Director implements Serializable{
     @Id
     @SequenceGenerator(name = "directorsSeq", sequenceName = "directors_sequence", allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "directorsSeq")

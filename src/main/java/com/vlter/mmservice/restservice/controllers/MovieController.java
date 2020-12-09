@@ -5,6 +5,8 @@ package com.vlter.mmservice.restservice.controllers;
  */
 
 import java.io.Serializable;
+import java.util.List;
+
 import com.vlter.mmservice.restservice.exceptions.DeleteMovieException;
 import com.vlter.mmservice.restservice.exceptions.ThereIsNoSuchMovieException;
 import com.vlter.mmservice.restservice.models.*;
@@ -21,58 +23,52 @@ public class MovieController {
 
     // Список всех кинофильмов
     @GetMapping()
-    public ListMovieResponse getAllNotes() {
-        ListMovieResponse listMovies = new ListMovieResponse(HttpStatus.OK.value(), movieService.movieRepository.findAll());
-        return listMovies;
+    public List getAllMovies() {
+        return movieService.movieRepository.findAll();
     }
 
     // Получить информацию о фильме по id
     @GetMapping("/{id}")
-    public MovieResponse getMovieById(@PathVariable (value = "id") Integer movieId) {
-        Movie rezMovie = movieService.movieRepository.findById(movieId).orElse(null);
+    public Movie getMovieById(@PathVariable int id) {
+        Movie rezMovie = movieService.movieRepository.findById(id).orElse(null);
         if (rezMovie == null) {
             throw new ThereIsNoSuchMovieException();
         }
-        return new MovieResponse(HttpStatus.OK.value(), rezMovie);
+        return rezMovie;
     }
 
     // Добавление записи о кинофильме
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping()
     public Serializable postMovie(@RequestBody Movie movie) {
         movieService.validateMovie(movie);
         Movie rezultMovie = movieService.addMovie(movie);
-
-        MovieResponse rezMovie = new MovieResponse(HttpStatus.OK.value(), rezultMovie);
-        return rezMovie;
+        return rezultMovie;
     }
 
     // Изменение информации о кинофильме с указанным id
-    @RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
-    public Serializable updateMovie(@PathVariable(value = "id") Integer movieId, @RequestBody Movie movieDetails) {
+    @PatchMapping("/{id}")
+    public Serializable updateMovie(@PathVariable Integer id, @RequestBody Movie movieDetails) {
         movieService.validateMovie(movieDetails);
-        Movie findRez = movieService.movieRepository.findById(movieId).orElse(null);
-        movieService.updateMovie(movieId, movieDetails);
-
-        MovieResponse rezMovie = new MovieResponse(HttpStatus.OK.value(), findRez);
-        return rezMovie;
+        Movie findRez = movieService.movieRepository.findById(id).orElse(null);
+        movieService.updateMovie(id, movieDetails);
+        return findRez;
     }
 
     // Удаление записи о фильме с указанным id
     @DeleteMapping("/{id}")
-    public Serializable deleteMovie(@PathVariable (value = "id") Integer movieId) {
-        Movie findRez = movieService.movieRepository.findById(movieId).orElse(null);
+    public Serializable deleteMovie(@PathVariable Integer id) {
+        Movie findRez = movieService.movieRepository.findById(id).orElse(null);
         if (findRez == null) {
             throw new ThereIsNoSuchMovieException();
         }
         else {
             try {
-                movieService.deleteMovie(movieId);
+                movieService.deleteMovie(id);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new DeleteMovieException();
             }
         }
-        MovieResponse rezMovie = new MovieResponse(HttpStatus.OK.value(), findRez);
-        return rezMovie;
+        return findRez;
     }
 }
