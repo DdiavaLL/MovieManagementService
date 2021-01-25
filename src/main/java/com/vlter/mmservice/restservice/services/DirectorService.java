@@ -6,11 +6,6 @@ import com.vlter.mmservice.restservice.models.Director;
 import com.vlter.mmservice.restservice.repositories.DirectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-import java.util.Set;
 
 /**
  * Created by Tereshchenko on 19.11.2020.
@@ -20,22 +15,6 @@ import java.util.Set;
 public class DirectorService {
     @Autowired
     public DirectorRepository directorRepository;
-
-    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    Validator validator = validatorFactory.getValidator();
-
-    public String validateDirector(Director director) {
-        String directorMessage = "";
-        Set<ConstraintViolation<Director>> violationsDirector = validator.validate(director);
-        if (violationsDirector != null) {
-            for (ConstraintViolation<Director> violation : violationsDirector) {
-                if (violation != null) {
-                    directorMessage += violation.getMessage() + " ";
-                }
-            }
-        }
-        return directorMessage;
-    }
 
     public Director addDirector(Director director) {
         Director help = directorRepository.findByDirectorEquals(director.getDirector());

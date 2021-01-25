@@ -6,13 +6,11 @@ package com.vlter.mmservice.restservice.controllers;
 
 import java.io.Serializable;
 import java.util.List;
-
 import com.vlter.mmservice.restservice.exceptions.DeleteMovieException;
 import com.vlter.mmservice.restservice.exceptions.ThereIsNoSuchMovieException;
 import com.vlter.mmservice.restservice.models.*;
 import com.vlter.mmservice.restservice.services.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,7 +38,6 @@ public class MovieController {
     // Добавление записи о кинофильме
     @PostMapping()
     public Serializable postMovie(@RequestBody Movie movie) {
-        movieService.validateMovie(movie);
         Movie rezultMovie = movieService.addMovie(movie);
         return rezultMovie;
     }
@@ -48,7 +45,6 @@ public class MovieController {
     // Изменение информации о кинофильме с указанным id
     @PatchMapping("/{id}")
     public Serializable updateMovie(@PathVariable Integer id, @RequestBody Movie movieDetails) {
-        movieService.validateMovie(movieDetails);
         Movie findRez = movieService.movieRepository.findById(id).orElse(null);
         movieService.updateMovie(id, movieDetails);
         return findRez;

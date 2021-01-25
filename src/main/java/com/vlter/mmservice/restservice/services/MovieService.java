@@ -2,22 +2,17 @@ package com.vlter.mmservice.restservice.services;
 
 import com.vlter.mmservice.restservice.exceptions.IncorrectMovieSaveException;
 import com.vlter.mmservice.restservice.exceptions.ThereIsNoSuchMovieException;
-import com.vlter.mmservice.restservice.exceptions.ValidationException;
 import com.vlter.mmservice.restservice.models.Director;
 import com.vlter.mmservice.restservice.models.Movie;
 import com.vlter.mmservice.restservice.repositories.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Tereshchenko on 17.11.2020.
  */
+
 @Service
 public class MovieService {
     @Autowired
@@ -25,24 +20,6 @@ public class MovieService {
 
     @Autowired
     DirectorService directorService;
-
-    ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    Validator validator = validatorFactory.getValidator();
-
-    public void validateMovie(Movie movie) {
-        String movieMessage = directorService.validateDirector(movie.getDirector());
-        Set<ConstraintViolation<Movie>> violationsMovie = validator.validate(movie);
-        if (violationsMovie != null) {
-            for (ConstraintViolation<Movie> violation : violationsMovie) {
-                if (violation != null) {
-                    movieMessage += violation.getMessage() + " ";
-                }
-            }
-        }
-        if (movieMessage != "") {
-            throw new ValidationException(movieMessage);
-        }
-    }
 
     public Movie addMovie(Movie movie) {
         Director help = directorService.addDirector(movie.getDirector());
